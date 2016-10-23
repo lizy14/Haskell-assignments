@@ -9,12 +9,12 @@ module Solution where
             then
                 0
             else
-                base * (stringToInt base (init str))
-                + (digitToInt (last str))
+                base * (stringToInt base $ init str)
+                + (digitToInt $ last str)
 
     isInt :: String -> Bool
-    isInt x = and (map isDigit x)
+    isInt x = and $ map isDigit x
 
     solution :: String -> Int
     solution x =
-        sum (map (stringToInt 10) (filter isInt (splitOn " " x)))
+        sum $ map (stringToInt 10) (filter isInt $ splitOn " " x)
