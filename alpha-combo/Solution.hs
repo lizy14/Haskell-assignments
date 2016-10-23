@@ -1,6 +1,6 @@
 -- alpha-combo
 module Solution where
-    import Data.List (subsequences)
+    import Data.List (subsequences, sort)
     solution :: Integer -> [[Char]]
     combinations k ns = filter ((k==).length) (subsequences ns)
-    solution i = combinations (fromIntegral i) "abcdefghijklmnopqrstuvwxyz"
+    solution i = sort $ combinations (fromIntegral i) "abcdefghijklmnopqrstuvwxyz"
