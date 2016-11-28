@@ -7,7 +7,7 @@ class BinaryTree t where
 	-- 取得键、取得左子树、取得右子树。返回 Maybe a 而非 a，可以应对当前结点为 Nil 的情形。
 	key :: t a -> Maybe a
 	left :: t a -> Maybe (t a)
-	right :: t a -> Maybe (t a)	
+	right :: t a -> Maybe (t a)
 	height :: t a -> Int
 	size :: t a -> Int
 	-- collect 返回中序遍历这棵树的结果。
@@ -31,28 +31,43 @@ leaf k = Node k 0 Nil Nil
 -- 要成为 BinaryTree 类型类的实例，AvlTree 得实现这些函数
 instance BinaryTree AvlTree where
 	-- 把这些名字绑定到 undefined，使得在开始改动任何东西之前，本文件就能通过编译。
-	key = undefined
+	key Nil = Nothing
+	key (Node k _ _ _) = Just k
 
-	left = undefined
+	left Nil = Nothing
+	left (Node _ _ l _) = Just l
 
-	right = undefined
+	right Nil = Nothing
+	right (Node _ _ _ r) = Just r
 
-	height = undefined
+	height Nil = 0
+	height (Node _ h _ _) = h
 
-	size = undefined
+	size Nil = 0
+	size (Node _ _ l r) = size l + size r + 1
 
-	collect = undefined
+	collect Nil = []
+	collect (Node k _ l r) = collect l ++ [k] ++ collect r
 
-	contains = undefined
+	contains key Nil = False
+	contains key (Node k _ l r) = or [
+			k == key,
+			contains key l,
+			contains key r
+		]
 
 -- 成为 SortedBinaryTree 类型类的实例
 instance SortedBinaryTree AvlTree where
 	-- 把这些名字绑定到 undefined，使得在开始改动任何东西之前，本文件就能通过编译。
 	-- 把这些 undefined 改成真正的函数实现，就像以前实现函数那样。
-	search = undefined
+	search _ Nil = Nothing
+	search key node@(Node k _ l r)
+		| key == k = Just node
+		| key < k = search key l
+		| key > k = search key r
 
 	insert = undefined
-	
+
 	remove = undefined
 
 -- AvlTree 独有的、不属于某个类型类的函数，定义在外面
@@ -67,6 +82,3 @@ instance Functor AvlTree where
 -- 成为 Foldable 类型类的实例
 instance Foldable AvlTree where
 	foldr = undefined
-	
-
-
