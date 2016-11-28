@@ -77,8 +77,13 @@ rotateLL = undefined
 
 -- 成为 Functor 类型类的实例
 instance Functor AvlTree where
-	fmap = undefined
+	fmap _ Nil = Nil
+	fmap f node@(Node k h l r) = Node
+		(f k)
+		h
+		(fmap f l)
+		(fmap f r)
 
 -- 成为 Foldable 类型类的实例
 instance Foldable AvlTree where
-	foldr = undefined
+	foldr f z node = foldr f z $ collect node
