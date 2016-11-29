@@ -62,18 +62,78 @@ instance SortedBinaryTree AvlTree where
 	-- 把这些 undefined 改成真正的函数实现，就像以前实现函数那样。
 	search _ Nil = Nothing
 	search key node@(Node k _ l r)
-		| key == k = Just node
 		| key < k = search key l
 		| key > k = search key r
+		| otherwise = Just node
 
-	insert = undefined
+	insert v Nil = leaf v
+	insert v node@(Node k h l r)
+		| v < k = let l' = insert v l in balance $ makeParent k l' r
+		| v > k = let r' = insert v r in balance $ makeParent k l r'
+		| otherwise = node
 
 	remove = undefined
 
 -- AvlTree 独有的、不属于某个类型类的函数，定义在外面
--- 当然不必叫 rotateLL 这个名字……
+
+makeParent :: a -> AvlTree a -> AvlTree a -> AvlTree a
+makeParent k l r =
+	Node k (makeHeight l r) l r
+	where makeHeight l r = 1 + max (height l) (height r)
+
+{-
+    a        b
+   / \      / \
+  b   c    d   a'
+ / \          / \
+d   e        e   c
+-}
 rotateLL :: AvlTree a -> AvlTree a
-rotateLL = undefined
+rotateLL (Node ak ah (Node bk bh d e) c) =
+	makeParent bk d a'
+	where a' = makeParent ak e c
+
+{-
+  a          c
+ / \        / \
+b   c      a'  e
+   / \    / \
+  d   e  b   d
+-}
+rotateRR :: AvlTree a -> AvlTree a
+rotateRR (Node ak ah b (Node ck ch d e)) =
+	makeParent ck a' e
+	where a' = makeParent ak b d
+
+rotateLR :: AvlTree a -> AvlTree a
+rotateLR (Node k h l r) = rotateLL (Node k h (rotateRR l) r)
+
+rotateRL :: AvlTree a -> AvlTree a
+rotateRL (Node k h l r) = rotateRR (Node k h l (rotateLL r))
+
+--do nothing if balanced, rotation otherwise
+balance :: AvlTree a -> AvlTree a
+balance t@(Node k h l r)
+	| (abs $ height l - height r) < 2 = t
+	| otherwise = rotate t
+
+rotate :: AvlTree a -> AvlTree a
+rotate node@(Node k h l r) = (
+	if leftHigher node then
+		if leftHigher l then
+			rotateLL
+		else
+			rotateLR
+	else
+		if leftHigher r then
+			rotateRL
+		else
+			rotateRR
+	) node
+	where leftHigher (Node k h l r) = (height l) > (height r)
+
+
+
 
 -- 成为 Functor 类型类的实例
 instance Functor AvlTree where

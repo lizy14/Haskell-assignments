@@ -15,10 +15,10 @@ a1 = Node 7 4
 				(leaf 5)
 				Nil))
 		(Node 13 3
-			(Node 11 2 
+			(Node 11 2
 				(Node 10 1
 					(leaf 8)
-					Nil)		
+					Nil)
 				(leaf 12))
 			(Node 15 1
 				(leaf 14)
@@ -26,12 +26,12 @@ a1 = Node 7 4
 
 aRBeforeInsert = Node 3 2
 					(leaf 1)
-					(Node 7 1 
+					(Node 7 1
 						(leaf 5)
 						(leaf 9))
 
 aLBeforeInsert = Node 9 2
-					(Node 5 1 
+					(Node 5 1
 						(leaf 3)
 						(leaf 7))
 					(leaf 11)
@@ -76,3 +76,5 @@ p52 = (foldr (:) [] aLBeforeInsert) == AvlTree.collect aLBeforeInsert
 -- [1,2,3,4,5,6,7,8,10,11,12,13,14,15,16]
 -- *Main> except 13 $ except 9 [1..16]
 -- [1,2,3,4,5,6,7,8,10,11,12,14,15,16]
+
+pall = and [p11,p12,p13,p21,p22,p23,p24,p25,p26,p27,p28,p41,p51,p52]
