@@ -67,7 +67,7 @@ instance SortedBinaryTree AvlTree where
 		| otherwise = Just node
 
 	insert v Nil = leaf v
-	insert v node@(Node k h l r)
+	insert v node@(Node k _ l r)
 		| v < k = let l' = insert v l in balance $ makeParent k l' r
 		| v > k = let r' = insert v r in balance $ makeParent k l r'
 		| otherwise = node
@@ -89,7 +89,7 @@ makeParent k l r =
 d   e        e   c
 -}
 rotateLL :: AvlTree a -> AvlTree a
-rotateLL (Node ak ah (Node bk bh d e) c) =
+rotateLL (Node ak _ (Node bk _ d e) c) =
 	makeParent bk d a'
 	where a' = makeParent ak e c
 
@@ -101,7 +101,7 @@ b   c      a'  e
   d   e  b   d
 -}
 rotateRR :: AvlTree a -> AvlTree a
-rotateRR (Node ak ah b (Node ck ch d e)) =
+rotateRR (Node ak _ b (Node ck _ d e)) =
 	makeParent ck a' e
 	where a' = makeParent ak b d
 
@@ -113,12 +113,12 @@ rotateRL (Node k h l r) = rotateRR (Node k h l (rotateLL r))
 
 --do nothing if balanced, rotation otherwise
 balance :: AvlTree a -> AvlTree a
-balance t@(Node k h l r)
-	| (abs $ height l - height r) < 2 = t
-	| otherwise = rotate t
+balance node@(Node _ _ l r)
+	| (abs $ height l - height r) < 2 = node
+	| otherwise = rotate node
 
 rotate :: AvlTree a -> AvlTree a
-rotate node@(Node k h l r) = (
+rotate node@(Node _ _ l r) = (
 	if leftHigher node then
 		if leftHigher l then
 			rotateLL
@@ -130,7 +130,7 @@ rotate node@(Node k h l r) = (
 		else
 			rotateRR
 	) node
-	where leftHigher (Node k h l r) = (height l) > (height r)
+	where leftHigher (Node _ _ l r) = (height l) > (height r)
 
 
 
