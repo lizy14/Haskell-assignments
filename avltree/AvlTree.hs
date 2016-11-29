@@ -1,6 +1,7 @@
 module AvlTree where
 
 import Data.Maybe
+import Data.List (elemIndex)
 
 -- 二叉树是一类树。为此定义一个类型类
 class BinaryTree t where
@@ -72,7 +73,12 @@ instance SortedBinaryTree AvlTree where
 		| v > k = let r' = insert v r in balance $ makeParent k l r'
 		| otherwise = node
 
-	remove = undefined
+	remove v Nil = Nil
+	remove v node@(Node k _ l r)
+		| v < k = let l' = remove v l in balance $ makeParent k l' r
+		| v > k = let r' = remove v r in balance $ makeParent k l r'
+		| otherwise = remove' node
+
 
 -- AvlTree 独有的、不属于某个类型类的函数，定义在外面
 
@@ -132,6 +138,17 @@ rotate node@(Node _ _ l r) = (
 	) node
 	where leftHigher (Node _ _ l r) = (height l) > (height r)
 
+
+-- remove a node itself, preserving all its children
+remove' :: (Ord a) => AvlTree a -> AvlTree a
+remove' (Node _ _ Nil r) = r
+remove' (Node _ _ l Nil) = l
+remove' node@(Node k _ l r) =
+	setKey predecessor $ remove predecessor node
+	where
+		setKey key (Node _ h l r) = Node key h l r
+		indexOf k = fromJust . elemIndex k
+		predecessor = (\xs -> xs !! (indexOf k xs - 1)) $ collect node
 
 
 

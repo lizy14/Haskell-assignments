@@ -77,4 +77,10 @@ p52 = (foldr (:) [] aLBeforeInsert) == AvlTree.collect aLBeforeInsert
 -- *Main> except 13 $ except 9 [1..16]
 -- [1,2,3,4,5,6,7,8,10,11,12,14,15,16]
 
-pall = and [p11,p12,p13,p21,p22,p23,p24,p25,p26,p27,p28,p41,p51,p52]
+pall = and[
+	p11,p12,p13,
+	p21,p22,p23,p24,p25,p26,p27,p28,
+	p31, --p32,
+	p41,
+	p51,p52
+	]
