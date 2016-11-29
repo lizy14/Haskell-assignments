@@ -1,4 +1,4 @@
-module AvlTree where
+module Solution where
 
 import Data.Maybe
 import Data.List (elemIndex)
